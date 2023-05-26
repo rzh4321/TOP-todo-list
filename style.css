@@ -1,0 +1,26 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Comfortaa', cursive;
+    font-size: 20px;   
+    background-color: lightgrey;
+    font-weight: 800;
+    height: 80px;
+    padding: 0px 20px;
+}
+
+#create-project {
+    display: flex;
+
+}
+
+#create-project input {
+    border-radius: 5px;
+    border-right: none;
+}
+
+#create-project button {
+    background-color: lightgreen;
+    border-radius: 5px;
+}
