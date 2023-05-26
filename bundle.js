@@ -1,0 +1,1 @@
+document.querySelector("#create-project button").addEventListener("click",(e=>{alert("adwasd")}));
