@@ -19,8 +19,16 @@ header {
     border-radius: 5px;
     border-right: none;
 }
+#create-project input:focus {
+    box-shadow: 0px 0px 5px black;
+}
 
 #create-project button {
     background-color: lightgreen;
     border-radius: 5px;
+    cursor: pointer;
+}
+
+#create-project button:hover {
+    background-color: green;
 }
