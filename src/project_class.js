@@ -11,9 +11,10 @@ class Task {
 
 
 class Project {
-    constructor(name) {
+    constructor(name, id) {
         this.name = name;
         this.tasks = [];
+        this.id = id;
     }
 
     add_task(task) {
@@ -23,3 +24,5 @@ class Project {
         this.tasks.splice(this.tasks.findIndex(task => task.id == task_id), 1);
     }
 }
+
+export {Task, Project};

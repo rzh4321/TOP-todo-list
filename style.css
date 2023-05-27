@@ -8,6 +8,7 @@ header {
     font-weight: 800;
     height: 80px;
     padding: 0px 20px;
+    margin-bottom: 30px;
 }
 
 #create-project {
@@ -31,4 +32,25 @@ header {
 
 #create-project button:hover {
     background-color: green;
+}
+
+.project {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    padding: 10px 20px;
+    height: 400px;
+    border: 2px solid black;
+}
+
+.title {
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.projects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
 }
