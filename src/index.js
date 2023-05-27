@@ -41,7 +41,7 @@ function create_buttons(proj) {
     add_task_btn.textContent = "+ add task";
     let remove_proj = document.createElement('button');
     remove_proj.textContent = "- remove project";
-    remove_proj.style.backgroundColor = 'red';
+    remove_proj.classList.add('red-button')
     btn_container.append(add_task_btn, remove_proj);
 
     add_task_btn.addEventListener('click', (e) => {
@@ -101,6 +101,7 @@ function add_task(task_form, proj) {
     let task = new Task(task_obj);
     console.log(task);
     proj.add_task(task);
+    console.log(proj);
 
     // list item representing the task
     let task_li = document.createElement('li');
@@ -119,14 +120,15 @@ function add_task(task_form, proj) {
             task_clicked = document.createElement('div');
             task_clicked.classList.add('task-clicked')
             task_clicked.dataset.id = task_li.id;
-
+            // create mark finished and delete task buttons
             let btn_container = document.createElement('div');
             btn_container.style.cssText = "display: flex; gap: 3px;";
             let mark_finish_btn = document.createElement('button');
             let delete_task_btn = document.createElement('button');
             mark_finish_btn.textContent = 'Mark finished';
             delete_task_btn.textContent = 'Delete task';
-            delete_task_btn.style.backgroundColor = 'red';
+            delete_task_btn.classList.add('red-button');
+            // create due date, description, and priority info
             let date = document.createElement('span');
             date.textContent = 'Due: ' + task.date;
             let desc = document.createElement('span');
@@ -134,7 +136,17 @@ function add_task(task_form, proj) {
             let priority = document.createElement('span');
             priority.textContent = 'Priority: ' + task.priority;
 
-
+            mark_finish_btn.addEventListener('click', (e) => {
+                const properties = [date, desc, priority];
+                task.completed = !task.completed;
+                console.log(task)
+                console.log(proj)
+                for (let prop of properties) {
+                    prop.classList.toggle('line-through');
+                }
+                mark_finish_btn.classList.toggle('red-button');
+                mark_finish_btn.textContent = (mark_finish_btn.textContent == 'Mark finished')? 'Mark unfinished': 'Mark finished';
+            });
 
 
             btn_container.append(mark_finish_btn, delete_task_btn);

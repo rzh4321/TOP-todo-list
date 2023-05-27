@@ -5,6 +5,7 @@ class Task {
         this.desc = task.desc;
         this.priority = task.priority;
         this.id = task.id;
+        this.completed = false;
     }
 }
 
