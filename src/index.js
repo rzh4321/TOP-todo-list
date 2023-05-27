@@ -30,7 +30,8 @@ function create_empty_project(proj) {
     let title = document.createElement('span');
     title.classList.add('title');
     title.textContent = proj.name;
-    container.append(title, create_buttons(proj));
+    let task_container = document.createElement('ul');
+    container.append(title, task_container, create_buttons(proj));
 }
 
 function create_buttons(proj) {
@@ -94,13 +95,46 @@ function add_task(task_form, proj) {
         priority : prio,
         id: task_id,
     };
-    task_id--;
     let task = new Task(task_obj);
     console.log(task);
     proj.add_task(task);
-    let task_div = document.createElement('div');
+    let task_div = document.createElement('li');
     task_div.classList.add('task');
+    task_div.id = task_id;
+    task_id--;
     task_div.textContent = task.name;
     task_form.remove();
-    btn_container.insertAdjacentElement('beforebegin', task_div);
+
+    task_div.addEventListener('click', (e) => {
+        let task_clicked = document.getElementById(task_div.id).querySelector('.task-clicked');
+        if (task_clicked == undefined) {
+            task_clicked = document.createElement('div');
+            task_clicked.classList.add('task-clicked')
+            let btn_container = document.createElement('div');
+            btn_container.style.cssText = "display: flex; gap: 3px;";
+            let mark_finish_btn = document.createElement('button');
+            let delete_task_btn = document.createElement('button');
+            mark_finish_btn.textContent = 'Mark finished';
+            delete_task_btn.textContent = 'Delete task';
+            let date = document.createElement('span');
+            date.textContent = 'Due: ' + task.date;
+            let desc = document.createElement('span');
+            desc.textContent = 'Description: ' + task.desc;
+            let priority = document.createElement('span');
+            priority.textContent = 'Priority: ' + task.priority;
+
+
+
+            btn_container.append(mark_finish_btn, delete_task_btn);
+            task_clicked.append(btn_container, date, desc, priority);
+            task_div.append(task_clicked);
+            
+        }
+        else {
+            task_clicked.classList.toggle('hidden');
+        }
+    })
+
+    let task_container = proj_container.querySelector('ul');
+    task_container.append(task_div);
 }
