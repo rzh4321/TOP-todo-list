@@ -24,7 +24,7 @@ header {
     box-shadow: 0px 0px 5px black;
 }
 
-#create-project button {
+#create-project button, .project button {
     background-color: lightgreen;
     border-radius: 5px;
     cursor: pointer;
@@ -42,6 +42,7 @@ header {
     padding: 10px 20px;
     height: 400px;
     border: 2px solid black;
+    min-width: 200px;
 }
 
 .title {
@@ -53,4 +54,15 @@ header {
     display: flex;
     flex-wrap: wrap;
     gap: 30px;
+}
+
+.project button {
+    padding: 5px;
+}
+
+.btn-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
 }
