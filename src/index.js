@@ -73,6 +73,11 @@ function create_buttons(proj) {
             task_form.classList.toggle('hidden');
         }
     });
+
+    remove_proj.addEventListener('click', (e) => {
+        projs.splice(projs.findIndex(project => project.id == proj.id), 1);
+        document.getElementById(proj.id).remove();
+    });
     return btn_container;
 }
 
@@ -90,7 +95,6 @@ function add_task(task_form, proj) {
         priority : prio,
         id: task_id,
     };
-    console.log(task_obj);
     task_id--;
     let task = new Task(task_obj);
     console.log(task);
