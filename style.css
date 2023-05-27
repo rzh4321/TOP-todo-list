@@ -83,3 +83,11 @@ textarea {
 .task {
     cursor: pointer;
 }
+
+.btn-container input {
+    margin: 10px 15px 20px 0px;
+}
+
+.btn-container textarea {
+    margin: 0px 15px 20px 0px;
+}

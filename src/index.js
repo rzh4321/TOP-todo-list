@@ -46,7 +46,6 @@ function create_buttons(proj) {
     add_task_btn.addEventListener('click', (e) => {
         let task_form = document.getElementById(proj.id).querySelector('form');
         if (task_form == undefined) {
-            alert('sdasd')
             task_form = document.createElement('form');
             task_form.innerHTML = `
                 <label for="task_name">Name: </label>
