@@ -99,9 +99,7 @@ function add_task(task_form, proj) {
         id: task_id,
     };
     let task = new Task(task_obj);
-    console.log(task);
     proj.add_task(task);
-    console.log(proj);
 
     // list item representing the task
     let task_li = document.createElement('li');
@@ -138,14 +136,21 @@ function add_task(task_form, proj) {
 
             mark_finish_btn.addEventListener('click', (e) => {
                 const properties = [date, desc, priority];
+                // toggle task completion
                 task.completed = !task.completed;
-                console.log(task)
-                console.log(proj)
+                // toggle line-through property
                 for (let prop of properties) {
                     prop.classList.toggle('line-through');
                 }
+                // toggle button style and text
                 mark_finish_btn.classList.toggle('red-button');
                 mark_finish_btn.textContent = (mark_finish_btn.textContent == 'Mark finished')? 'Mark unfinished': 'Mark finished';
+            });
+
+            delete_task_btn.addEventListener('click', (e) => {
+                proj.remove_task(task.id);
+                task_li.remove();
+                task_clicked.remove();
             });
 
 
