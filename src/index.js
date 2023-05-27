@@ -88,7 +88,8 @@ function add_task(task_form, proj) {
 
     // create task object and append to project object
     const task_name = proj_container.querySelector('#task_name').value;
-    const due_date = proj_container.querySelector('#due').value;
+    let due_date = proj_container.querySelector('#due').value;
+    if (due_date == '') due_date = 'N/A';
     const description = proj_container.querySelector('#desc').value;
     const prio = proj_container.querySelector('#priority').value;
     const task_obj = {
@@ -99,6 +100,7 @@ function add_task(task_form, proj) {
         id: task_id,
     };
     let task = new Task(task_obj);
+    console.log(task)
     proj.add_task(task);
 
     // list item representing the task
@@ -128,7 +130,7 @@ function add_task(task_form, proj) {
             delete_task_btn.classList.add('red-button');
             // create due date, description, and priority info
             let date = document.createElement('span');
-            date.textContent = 'Due: ' + task.date;
+            date.textContent = 'Due: ' + task.due;
             let desc = document.createElement('span');
             desc.textContent = 'Description: ' + task.desc;
             let priority = document.createElement('span');
