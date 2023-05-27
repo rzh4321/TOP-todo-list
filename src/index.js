@@ -44,29 +44,35 @@ function create_buttons(proj) {
     btn_container.append(add_task_btn, remove_proj);
 
     add_task_btn.addEventListener('click', (e) => {
-        let task_form = document.createElement('form');
-        task_form.innerHTML = `
-            <label for="task_name">Name: </label>
-            <input type="text" id="task_name" name="name" value="Ricky">
-            <label for="due">Due: </label>
-            <input type="date" id="due" name="due">
-            <label for="desc">Description: </label>
-            <textarea id="desc" cols="30" rows="10" name="desc"></textarea>
-            <label for="priority">Priority: </label>
-            <select id="priority" name="priority">
-                <option>Low</option>
-                <option selected>Medium</option>
-                <option>High</option>
-            </select>
-            <button>Done</button>
-        `;
-        task_form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            add_task(task_form, proj);
-        });
-        btn_container.append(task_form);
+        let task_form = document.getElementById(proj.id).querySelector('form');
+        if (task_form == undefined) {
+            alert('sdasd')
+            task_form = document.createElement('form');
+            task_form.innerHTML = `
+                <label for="task_name">Name: </label>
+                <input type="text" id="task_name" name="name" value="Ricky">
+                <label for="due">Due: </label>
+                <input type="date" id="due" name="due">
+                <label for="desc">Description: </label>
+                <textarea id="desc" cols="30" rows="10" name="desc"></textarea>
+                <label for="priority">Priority: </label>
+                <select id="priority" name="priority">
+                    <option>Low</option>
+                    <option selected>Medium</option>
+                    <option>High</option>
+                </select>
+                <button>Done</button>
+            `;
+            task_form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                add_task(task_form, proj);
+            });
+            btn_container.append(task_form);
+        }
+        else {
+            task_form.classList.toggle('hidden');
+        }
     });
-
     return btn_container;
 }
 
