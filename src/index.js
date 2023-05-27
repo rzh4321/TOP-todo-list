@@ -46,6 +46,7 @@ function create_buttons(proj) {
 
     add_task_btn.addEventListener('click', (e) => {
         let task_form = document.getElementById(proj.id).querySelector('form');
+        // create task form since it doesnt exist yet (first time add task button is clicked)
         if (task_form == undefined) {
             task_form = document.createElement('form');
             task_form.innerHTML = `
@@ -83,7 +84,9 @@ function create_buttons(proj) {
 
 function add_task(task_form, proj) {
     let proj_container = document.getElementById(proj.id);
-    let btn_container = proj_container.querySelector('.btn-container');
+    let task_container = proj_container.querySelector('ul');
+
+    // create task object and append to project object
     const task_name = proj_container.querySelector('#task_name').value;
     const due_date = proj_container.querySelector('#due').value;
     const description = proj_container.querySelector('#desc').value;
@@ -98,24 +101,32 @@ function add_task(task_form, proj) {
     let task = new Task(task_obj);
     console.log(task);
     proj.add_task(task);
-    let task_div = document.createElement('li');
-    task_div.classList.add('task');
-    task_div.id = task_id;
+
+    // list item representing the task
+    let task_li = document.createElement('li');
+    task_li.classList.add('task');
+    task_li.id = task_id;
     task_id--;
-    task_div.textContent = task.name;
+    task_li.textContent = task.name;
+    // delete task form once we extracted all task information
     task_form.remove();
 
-    task_div.addEventListener('click', (e) => {
-        let task_clicked = document.getElementById(task_div.id).querySelector('.task-clicked');
+    task_li.addEventListener('click', (e) => {
+        const selector = `[data-id="${task_li.id}"]`;
+        let task_clicked = task_container.querySelector(selector);
+        // create task info div since it doesnt exist yet
         if (task_clicked == undefined) {
             task_clicked = document.createElement('div');
             task_clicked.classList.add('task-clicked')
+            task_clicked.dataset.id = task_li.id;
+
             let btn_container = document.createElement('div');
             btn_container.style.cssText = "display: flex; gap: 3px;";
             let mark_finish_btn = document.createElement('button');
             let delete_task_btn = document.createElement('button');
             mark_finish_btn.textContent = 'Mark finished';
             delete_task_btn.textContent = 'Delete task';
+            delete_task_btn.style.backgroundColor = 'red';
             let date = document.createElement('span');
             date.textContent = 'Due: ' + task.date;
             let desc = document.createElement('span');
@@ -125,17 +136,17 @@ function add_task(task_form, proj) {
 
 
 
+
             btn_container.append(mark_finish_btn, delete_task_btn);
             task_clicked.append(btn_container, date, desc, priority);
-            task_div.append(task_clicked);
+            task_li.insertAdjacentElement('afterend', task_clicked);
             
         }
         else {
             task_clicked.classList.toggle('hidden');
         }
-        task_div.style.cursor = (task_div.style.cursor == 'pointer' || task_div.style.cursor == '')? 'default': 'pointer';
     });
 
-    let task_container = proj_container.querySelector('ul');
-    task_container.append(task_div);
+
+    task_container.append(task_li);
 }
