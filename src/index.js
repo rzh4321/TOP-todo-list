@@ -133,7 +133,8 @@ function add_task(task_form, proj) {
         else {
             task_clicked.classList.toggle('hidden');
         }
-    })
+        task_div.style.cursor = (task_div.style.cursor == 'pointer' || task_div.style.cursor == '')? 'default': 'pointer';
+    });
 
     let task_container = proj_container.querySelector('ul');
     task_container.append(task_div);
