@@ -4,7 +4,6 @@ class Task {
         this.due = task.due;
         this.desc = task.desc;
         this.priority = task.priority;
-        this.completed = task.completed;
         this.id = task.id;
     }
 }
