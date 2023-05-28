@@ -45,17 +45,21 @@ function load_projects() {
     if (projs != null) {
         console.log(`PREVIOUS PROJECTS: ${localStorage}`);
         for (let proj of projs) {
-            create_project(proj);
+            create_project(proj, false);
+            for (let task of proj.tasks) {
+                add_task(proj, task);
+            }
         }
     }
     else {
         console.log('no previous projects')
     }
+
 }
 
 
-
-function create_project(proj) {
+// adds project div to document, including two buttons to add task and delete project
+function create_project(proj, is_new_project) {
     let container = document.createElement('div');
     container.classList.add('project');
     // associate project div with its project object
@@ -68,6 +72,7 @@ function create_project(proj) {
     container.append(title, task_container, create_buttons(proj));
 }
 
+// adds "add task" and "delete project" buttons to project div
 function create_buttons(proj) {
     let btn_container = document.createElement('div');
     btn_container.classList.add('btn-container');
@@ -100,7 +105,7 @@ function create_buttons(proj) {
             `;
             task_form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                add_task(proj, extract_info(task_form));
+                add_task(proj, extract_info(task_form, proj));
             });
             btn_container.append(task_form);
         }
@@ -121,7 +126,7 @@ function create_buttons(proj) {
     return btn_container;
 }
 
-function extract_info(task_form) {
+function extract_info(task_form, proj) {
     // create task object from form and return it
     const task_name = task_form.querySelector('#task_name').value;
     let due_date = task_form.querySelector('#due').value;
@@ -137,19 +142,10 @@ function extract_info(task_form) {
     };
     // delete task form once we extracted all task information
     task_form.remove();
-    return task_obj
-}
-
-// functions called when user creates new task after filling form
-function add_task(proj, task_obj) {
-    // get corresponding project container
-    let proj_container = document.getElementById(proj.id);
-    // get corresponding task container within project div
-    let task_container = proj_container.querySelector('ul');
-
+    // task object is from form, its newly created, so add to project object
     let task = new Task(task_obj);
     proj.add_task(task);
-    // update stored project object
+    // update storage
     task_id--;
     localStorage.setItem('task_id', String(task_id));
     localStorage.setItem('projs', JSON.stringify(projs));
@@ -157,12 +153,22 @@ function add_task(proj, task_obj) {
     console.log(localStorage);
     console.log('------------------------');
 
+    return task;
+}
 
-    // list item representing the task
+// adds task div to document
+function add_task(proj, task_obj) {
+    // get corresponding project container
+    let proj_container = document.getElementById(proj.id);
+    // get corresponding task container within project div
+    let task_container = proj_container.querySelector('ul');
+
+
+    // add task to document. list item represents the task
     let task_li = document.createElement('li');
     task_li.classList.add('task');
-    task_li.id = task.id;
-    task_li.textContent = task.name;
+    task_li.id = task_obj.id;
+    task_li.textContent = task_obj.name;
 
     task_li.addEventListener('click', (e) => {
         const selector = `[data-id="${task_li.id}"]`;
@@ -182,19 +188,19 @@ function add_task(proj, task_obj) {
             delete_task_btn.classList.add('red-button');
             // create due date, description, and priority info
             let date = document.createElement('span');
-            date.textContent = 'Due: ' + task.due;
+            date.textContent = 'Due: ' + task_obj.due;
             let desc = document.createElement('span');
-            desc.textContent = 'Description: ' + task.desc;
+            desc.textContent = 'Description: ' + task_obj.desc;
             let priority = document.createElement('span');
-            priority.textContent = 'Priority: ' + task.priority;
+            priority.textContent = 'Priority: ' + task_obj.priority;
 
             mark_finish_btn.addEventListener('click', (e) => {
                 const properties = [date, desc, priority];
                 // toggle task completion
-                task.completed = !task.completed;
+                task_obj.completed = !task_obj.completed;
                 // update stored project object
                 localStorage.setItem('projs', JSON.stringify(projs));
-                console.log(`YOU JUST SET TASK OF ID ${task.id} AS COMPLETE FOR PROJECT ${proj.id}`);
+                console.log(`YOU JUST SET TASK OF ID ${task_obj.id} AS COMPLETE FOR PROJECT ${proj.id}`);
                 console.log(localStorage);
                 console.log('------------------------');
                 // toggle line-through property
@@ -207,12 +213,12 @@ function add_task(proj, task_obj) {
             });
 
             delete_task_btn.addEventListener('click', (e) => {
-                proj.remove_task(task.id);
+                proj.remove_task(task_obj.id);
                 task_li.remove();
                 task_clicked.remove();
                 // update stored project object
                 localStorage.setItem('projs', JSON.stringify(projs));
-                console.log(`YOU JUST DELETED TASK OF ID ${task.id} FOR PROJECT ${proj.id}. WE DELETED TASK OBJECT FROM ITS ARRAY`);
+                console.log(`YOU JUST DELETED TASK OF ID ${task_obj.id} FOR PROJECT ${proj.id}. WE DELETED TASK OBJECT FROM ITS ARRAY`);
                 console.log(localStorage);
                 console.log('------------------------');
             });
