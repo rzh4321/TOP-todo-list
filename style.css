@@ -1,8 +1,11 @@
+html {
+    font-family: 'Comfortaa', cursive;
+}
+
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: 'Comfortaa', cursive;
     font-size: 20px;   
     background-color: lightgrey;
     font-weight: 800;

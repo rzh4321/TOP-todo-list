@@ -1,11 +1,23 @@
 import {Task, Project} from './project_class.js';
-let proj_id = 1;
-let task_id = -1;
+
+function get_ids() {
+    let projs = JSON.parse(localStorage.getItem('projs'));
+    // project has never been created before
+    if (projs == null || projs.length == 0) return [1, -1];
+    let proj_id = projs[projs.length - 1].id + 1
+    let task_id = +localStorage.getItem('task_id');
+    return [proj_id, task_id];
+}
+
+let [proj_id, task_id] = get_ids();
+
 const projs = [];
 
 let project_container = document.querySelector('.projects');
 let create_proj_btn = document.querySelector('#create-project button');
 let proj_name = document.querySelector('#create-project input');
+
+
 
 create_proj_btn.addEventListener('click', (e) => {
     let proj;
@@ -17,14 +29,36 @@ create_proj_btn.addEventListener('click', (e) => {
     }
     proj_id++;
     projs.push(proj);
-    create_empty_project(proj);
+    localStorage.setItem('task_id', String(task_id));
+    localStorage.setItem('projs', JSON.stringify(projs));
+    console.log(`YOU JUST CREATED A PROJECT THAT HAS ID OF ${proj.id}`);
+    console.log(localStorage);
+    console.log('------------------------');
+    create_project(proj);
 })
 
+load_projects();
+
+function load_projects() {
+    let projs = JSON.parse(localStorage.getItem('projs'));
+    // project has never been created before
+    if (projs != null) {
+        console.log(`PREVIOUS PROJECTS: ${localStorage}`);
+        for (let proj of projs) {
+            create_project(proj);
+        }
+    }
+    else {
+        console.log('no previous projects')
+    }
+}
 
 
-function create_empty_project(proj) {
+
+function create_project(proj) {
     let container = document.createElement('div');
     container.classList.add('project');
+    // associate project div with its project object
     container.id = proj.id;
     project_container.append(container);
     let title = document.createElement('span');
@@ -66,7 +100,7 @@ function create_buttons(proj) {
             `;
             task_form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                add_task(task_form, proj);
+                add_task(proj, extract_info(task_form));
             });
             btn_container.append(task_form);
         }
@@ -78,20 +112,22 @@ function create_buttons(proj) {
     remove_proj.addEventListener('click', (e) => {
         projs.splice(projs.findIndex(project => project.id == proj.id), 1);
         document.getElementById(proj.id).remove();
+        // remove project object from storage, and update array of project ids
+        localStorage.setItem('projs', JSON.stringify(projs));
+        console.log(`YOU JUST DELETED A PROJECT, SO UPDATED ARRAY`);
+        console.log(localStorage);
+        console.log('------------------------');
     });
     return btn_container;
 }
 
-function add_task(task_form, proj) {
-    let proj_container = document.getElementById(proj.id);
-    let task_container = proj_container.querySelector('ul');
-
-    // create task object and append to project object
-    const task_name = proj_container.querySelector('#task_name').value;
-    let due_date = proj_container.querySelector('#due').value;
+function extract_info(task_form) {
+    // create task object from form and return it
+    const task_name = task_form.querySelector('#task_name').value;
+    let due_date = task_form.querySelector('#due').value;
     if (due_date == '') due_date = 'N/A';
-    const description = proj_container.querySelector('#desc').value;
-    const prio = proj_container.querySelector('#priority').value;
+    const description = task_form.querySelector('#desc').value;
+    const prio = task_form.querySelector('#priority').value;
     const task_obj = {
         name: task_name,
         due: due_date,
@@ -99,18 +135,34 @@ function add_task(task_form, proj) {
         priority : prio,
         id: task_id,
     };
+    // delete task form once we extracted all task information
+    task_form.remove();
+    return task_obj
+}
+
+// functions called when user creates new task after filling form
+function add_task(proj, task_obj) {
+    // get corresponding project container
+    let proj_container = document.getElementById(proj.id);
+    // get corresponding task container within project div
+    let task_container = proj_container.querySelector('ul');
+
     let task = new Task(task_obj);
-    console.log(task)
     proj.add_task(task);
+    // update stored project object
+    task_id--;
+    localStorage.setItem('task_id', String(task_id));
+    localStorage.setItem('projs', JSON.stringify(projs));
+    console.log(`YOU JUST CREATED A TASK OF ID ${task.id} FOR PROJECT ${proj.id}. WE ADDED TASK OBJECT TO ITS ARRAY`);
+    console.log(localStorage);
+    console.log('------------------------');
+
 
     // list item representing the task
     let task_li = document.createElement('li');
     task_li.classList.add('task');
-    task_li.id = task_id;
-    task_id--;
+    task_li.id = task.id;
     task_li.textContent = task.name;
-    // delete task form once we extracted all task information
-    task_form.remove();
 
     task_li.addEventListener('click', (e) => {
         const selector = `[data-id="${task_li.id}"]`;
@@ -140,6 +192,11 @@ function add_task(task_form, proj) {
                 const properties = [date, desc, priority];
                 // toggle task completion
                 task.completed = !task.completed;
+                // update stored project object
+                localStorage.setItem('projs', JSON.stringify(projs));
+                console.log(`YOU JUST SET TASK OF ID ${task.id} AS COMPLETE FOR PROJECT ${proj.id}`);
+                console.log(localStorage);
+                console.log('------------------------');
                 // toggle line-through property
                 for (let prop of properties) {
                     prop.classList.toggle('line-through');
@@ -153,6 +210,11 @@ function add_task(task_form, proj) {
                 proj.remove_task(task.id);
                 task_li.remove();
                 task_clicked.remove();
+                // update stored project object
+                localStorage.setItem('projs', JSON.stringify(projs));
+                console.log(`YOU JUST DELETED TASK OF ID ${task.id} FOR PROJECT ${proj.id}. WE DELETED TASK OBJECT FROM ITS ARRAY`);
+                console.log(localStorage);
+                console.log('------------------------');
             });
 
 
