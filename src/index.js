@@ -203,7 +203,12 @@ function add_task(proj, task_obj) {
             btn_container.style.cssText = "display: flex; gap: 3px;";
             let mark_finish_btn = document.createElement('button');
             let delete_task_btn = document.createElement('button');
-            mark_finish_btn.textContent = 'Mark finished';
+            // make button red and change its text depending if task is finished
+            if (task_obj.completed) {
+                mark_finish_btn.textContent = 'Mark unfinished';
+                mark_finish_btn.classList.add('red-button');
+            }
+            else mark_finish_btn.textContent = 'Mark finished';
             delete_task_btn.textContent = 'Delete task';
             delete_task_btn.classList.add('red-button');
             // create due date, description, and priority info
@@ -214,9 +219,16 @@ function add_task(proj, task_obj) {
             let priority = document.createElement('span');
             priority.textContent = 'Priority: ' + task_obj.priority;
 
+            // set line-through if task is finished
+            const properties = [date, desc, priority];
+            if (task_obj.completed) {
+                for (let prop of properties) {
+                    prop.classList.toggle('line-through');
+                }
+            }
+
             mark_finish_btn.addEventListener('click', (e) => {
                 console.log(`YOU JUST SET TASK OF ID ${task_obj.id} AS COMPLETE FOR PROJECT ${proj.id}`);
-                const properties = [date, desc, priority];
                 // toggle task completion
                 task_obj.completed = !task_obj.completed;
                 // update stored project object
