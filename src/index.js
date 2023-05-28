@@ -1,15 +1,33 @@
 import {Task, Project} from './project_class.js';
 
-
-
 const projs = [];
 let [proj_id, task_id] = get_ids();
 
-let project_container = document.querySelector('.projects');
+let project_containers = document.querySelector('.projects');
 let create_proj_btn = document.querySelector('#create-project button');
 let proj_name = document.querySelector('#create-project input');
 
 load_projects();
+
+create_proj_btn.addEventListener('click', (e) => {
+    let proj;
+    if (proj_name.value == '') {
+        proj = new Project('untitled project', proj_id);
+    }
+    else {
+        proj = new Project(proj_name.value, proj_id)
+    }
+    proj_id++;
+    projs.push(proj);
+    localStorage.setItem('task_id', String(task_id));
+    localStorage.setItem('projs', JSON.stringify(projs));
+    // console.log(`YOU JUST CREATED A PROJECT THAT HAS ID OF ${proj.id}`);
+    // console.log(projs);
+    // console.log(localStorage);
+    // console.log('------------------------');
+    create_project(proj);
+})
+
 
 
 function get_ids() {
@@ -24,24 +42,6 @@ function get_ids() {
 
 
 
-create_proj_btn.addEventListener('click', (e) => {
-    let proj;
-    if (proj_name.value == '') {
-        proj = new Project('untitled project', proj_id);
-    }
-    else {
-        proj = new Project(proj_name.value, proj_id)
-    }
-    proj_id++;
-    projs.push(proj);
-    localStorage.setItem('task_id', String(task_id));
-    localStorage.setItem('projs', JSON.stringify(projs));
-    console.log(`YOU JUST CREATED A PROJECT THAT HAS ID OF ${proj.id}`);
-    console.log(projs);
-    console.log(localStorage);
-    console.log('------------------------');
-    create_project(proj);
-})
 
 
 function load_projects() {
@@ -64,22 +64,16 @@ function load_projects() {
             }
         }
     }
-    else {
-        console.log('no previous projects')
-    }
-
 }
 
 
 // adds project container to document, including two buttons to add task and delete project
 function create_project(proj) {
-    // console.log('YOU JUST CREATED A PROJECT (THIS IS BEFORE CREATE BUTTONS) FROM STORAGE. PROJS IS:');
-    // console.log(projs);
     let container = document.createElement('div');
     container.classList.add('project');
-    // associate project div with its project object
+    // associate project container with its project object
     container.id = proj.id;
-    project_container.append(container);
+    project_containers.append(container);
     let title = document.createElement('span');
     title.classList.add('title');
     title.textContent = proj.name;
@@ -99,34 +93,7 @@ function create_buttons(proj) {
     btn_container.append(add_task_btn, remove_proj);
 
     add_task_btn.addEventListener('click', (e) => {
-        let task_form = document.getElementById(proj.id).querySelector('form');
-        // create task form since it doesnt exist yet (first time add task button is clicked)
-        if (task_form == undefined) {
-            task_form = document.createElement('form');
-            task_form.innerHTML = `
-                <label for="task_name">Name: </label>
-                <input type="text" id="task_name" name="name" value="Ricky">
-                <label for="due">Due: </label>
-                <input type="date" id="due" name="due">
-                <label for="desc">Description: </label>
-                <textarea id="desc" cols="30" rows="10" name="desc"></textarea>
-                <label for="priority">Priority: </label>
-                <select id="priority" name="priority">
-                    <option>Low</option>
-                    <option selected>Medium</option>
-                    <option>High</option>
-                </select>
-                <button>Done</button>
-            `;
-            task_form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                add_task(proj, extract_info(task_form, proj));
-            });
-            btn_container.append(task_form);
-        }
-        else {
-            task_form.classList.toggle('hidden');
-        }
+        create_task_form(proj, btn_container);
     });
 
     remove_proj.addEventListener('click', (e) => {
@@ -142,6 +109,37 @@ function create_buttons(proj) {
         console.log('------------------------');
     });
     return btn_container;
+}
+
+function create_task_form(proj, btn_container) {
+    let task_form = document.getElementById(proj.id).querySelector('form');
+    // create task form since it doesnt exist yet (first time add task button is clicked)
+    if (task_form == undefined) {
+        task_form = document.createElement('form');
+        task_form.innerHTML = `
+            <label for="task_name">Name: </label>
+            <input type="text" id="task_name" name="name" value="Ricky">
+            <label for="due">Due: </label>
+            <input type="date" id="due" name="due">
+            <label for="desc">Description: </label>
+            <textarea id="desc" cols="30" rows="10" name="desc"></textarea>
+            <label for="priority">Priority: </label>
+            <select id="priority" name="priority">
+                <option>Low</option>
+                <option selected>Medium</option>
+                <option>High</option>
+            </select>
+            <button>Done</button>
+        `;
+        task_form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            add_task(proj, extract_info(task_form, proj));
+        });
+        btn_container.append(task_form);
+    }
+    else {
+        task_form.classList.toggle('hidden');
+    }
 }
 
 function extract_info(task_form, proj) {
