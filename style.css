@@ -130,3 +130,7 @@ li {
 .red-button {
     background-color: red !important;
 }
+
+.task-info {
+    font-weight: 800;
+}

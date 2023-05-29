@@ -101,12 +101,12 @@ function create_buttons(proj) {
         document.getElementById(proj.id).remove();
         // remove project object from storage
         localStorage.setItem('projs', JSON.stringify(projs));
-        console.log(`YOU JUST DELETED A PROJECT, SO UPDATED PROJS`);
-        console.log('PROJS:');
-        console.log(projs);
-        console.log('STORAGE:')
-        console.log(localStorage);
-        console.log('------------------------');
+        // console.log(`YOU JUST DELETED A PROJECT, SO UPDATED PROJS`);
+        // console.log('PROJS:');
+        // console.log(projs);
+        // console.log('STORAGE:')
+        // console.log(localStorage);
+        // console.log('------------------------');
     });
     return btn_container;
 }
@@ -118,7 +118,7 @@ function create_task_form(proj, btn_container) {
         task_form = document.createElement('form');
         task_form.innerHTML = `
             <label for="task_name">Name: </label>
-            <input type="text" id="task_name" name="name" value="Ricky">
+            <input type="text" id="task_name" name="name" value="Untitled task">
             <label for="due">Due: </label>
             <input type="date" id="due" name="due">
             <label for="desc">Description: </label>
@@ -210,15 +210,30 @@ function add_task(proj, task_obj) {
             delete_task_btn.textContent = 'Delete task';
             delete_task_btn.classList.add('red-button');
             // create due date, description, and priority info
+            let date_div = document.createElement('div');
             let date = document.createElement('span');
-            date.textContent = 'Due: ' + task_obj.due;
+            date.textContent = 'Due: ';
+            date.classList.add('task-info');
+            date_div.append(date);
+            date.insertAdjacentText('afterend', task_obj.due);
+
+            let desc_div = document.createElement('div');
             let desc = document.createElement('span');
-            desc.textContent = 'Description: ' + task_obj.desc;
+            desc.textContent = 'Description: ';
+            desc.classList.add('task-info');
+            desc_div.append(desc);
+            desc.insertAdjacentText('afterend', task_obj.desc);
+
+
+            let priority_div = document.createElement('div');
             let priority = document.createElement('span');
-            priority.textContent = 'Priority: ' + task_obj.priority;
+            priority.textContent = 'Priority: ';
+            priority.classList.add('task-info');
+            priority_div.append(priority);
+            priority.insertAdjacentText('afterend', task_obj.priority);
 
             // set line-through if task is finished
-            const properties = [date, desc, priority];
+            const properties = [date_div, desc_div, priority_div];
             if (task_obj.completed) {
                 for (let prop of properties) {
                     prop.classList.toggle('line-through');
@@ -260,7 +275,7 @@ function add_task(proj, task_obj) {
 
 
             btn_container.append(mark_finish_btn, delete_task_btn);
-            task_clicked.append(btn_container, date, desc, priority);
+            task_clicked.append(btn_container, date_div, desc_div, priority_div);
             task_li.insertAdjacentElement('afterend', task_clicked);
             
         }
