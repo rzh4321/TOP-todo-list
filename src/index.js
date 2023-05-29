@@ -92,10 +92,12 @@ function create_buttons(proj) {
     });
 
     remove_proj.addEventListener('click', (e) => {
-        projs.splice(projs.findIndex(project => project.id == proj.id), 1);
-        document.getElementById(proj.id).remove();
-        // remove project object from storage
-        localStorage.setItem('projs', JSON.stringify(projs));
+        if (confirm('Remove project?')) {
+            projs.splice(projs.findIndex(project => project.id == proj.id), 1);
+            document.getElementById(proj.id).remove();
+            // remove project object from storage
+            localStorage.setItem('projs', JSON.stringify(projs));
+        }
     });
     return btn_container;
 }
@@ -236,6 +238,7 @@ function create_task_action_buttons(proj, task_obj, task_li, properties, task_cl
     });
 
     delete_task_btn.addEventListener('click', (e) => {
+        if (confirm('Delete task?'))  
         delete_task(proj, task_obj, task_li, task_clicked);
     });
 
